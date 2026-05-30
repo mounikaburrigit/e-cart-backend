@@ -21,6 +21,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'user',
   },
+
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+
+  otp: {
+    type: String,
+    default: null,
+  },
+
+  otpExpire: {
+    type: Date,
+    default: null,
+  },
 })
 
 module.exports = mongoose.model(
