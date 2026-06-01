@@ -9,6 +9,17 @@ const sendEmail = require(
   '../utils/sendEmail'
 )
 /* REGISTER USER */
+const {
+  OAuth2Client,
+} = require(
+  'google-auth-library'
+)
+
+const client =
+  new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID
+  )
+
 
 const registerUser = async (
   req,
@@ -318,10 +329,73 @@ const resetPassword = async (
   }
 }
 
+
+
+ const googleLogin = async (
+  req,
+  res
+) => {
+  try {
+    const {credential} =
+      req.body
+
+    const ticket =
+      await client.verifyIdToken({
+        idToken: credential,
+        audience:
+          process.env.GOOGLE_CLIENT_ID,
+      })
+
+    const payload =
+      ticket.getPayload()
+
+    const email =
+      payload.email
+
+    const name =
+      payload.name
+
+    let user =
+      await User.findOne({
+        email,
+      })
+
+    if (!user) {
+      user =
+        await User.create({
+          name,
+          email,
+          password:
+            'google-auth-user',
+          isVerified: true,
+        })
+    }
+
+    res.json({
+      token:
+        generateToken(
+          user._id
+        ),
+
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    })
+  } catch (error) {
+    console.log(error)
+
+    res.status(500).json({
+      message:
+        'Google Login Failed',
+    })
+  }
+}
 module.exports = {
   registerUser,
   loginUser,
   verifyOtp,
   forgotPassword,
   resetPassword,
+  googleLogin,
 }

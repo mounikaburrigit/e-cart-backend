@@ -6,6 +6,7 @@ const {
   verifyOtp,
   forgotPassword,
   resetPassword,
+  googleLogin,
 } = require(
   '../controllers/authController'
 )
@@ -35,6 +36,10 @@ router.post(
 router.post(
   '/reset-password',
   resetPassword
+)
+router.post(
+  '/google-login',
+  googleLogin
 )
 
 module.exports = router
