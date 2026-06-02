@@ -15,7 +15,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://ecommerce-ochre-delta-40.vercel.app",
+    origin: [
+      "https://ecommerce-ochre-delta-40.vercel.app",
+      "http://localhost:5173"
+    ]
   })
 );
 
